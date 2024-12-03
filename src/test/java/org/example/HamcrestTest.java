@@ -3,6 +3,11 @@ package org.example;
 import org.hamcrest.Matcher;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
@@ -82,4 +87,81 @@ public class HamcrestTest {
         assertThat(mensaje,matcherEitherAnd);
     }
 
+    @Test
+    void asercionesListas(){
+        List<Integer> numeros = Arrays.asList(1,34,544,2,4,32,11);
+        //assertThat(numeros, is(empty())); //la lista sea vacia
+
+        assertThat(numeros,hasSize(7)); //contenga 7 elementos
+
+        assertThat(numeros, contains(1,34,544,2,4,32,11)); //misma cantidad de
+        // elementos en el mismo orden, esto es lo que yo espero
+        assertThat(numeros, containsInAnyOrder(34,544,2,4,1,32,11)); //esten todos los valores
+
+        assertThat(numeros, hasItem(544));//que contenga ese valor
+        assertThat(numeros, not(hasItem(22)));
+        assertThat(numeros, hasItems(544,34,2));
+
+        assertThat(numeros, everyItem(greaterThan(0))); //cada elemento mayor a 0
+
+        //ANY OF -> Multiples comparaciones si se cumple una el test pasa
+        assertThat(numeros, anyOf(hasItem(4),hasItem(11),hasItem(40)));
+    }
+
+    @Test
+    void asercionesArray(){
+        String[] arrayNombres = {"Claudia", "Glow", "Por ejemplo", "Oscar", "Vida"};
+
+        assertThat(arrayNombres, arrayWithSize(5));
+        assertThat(arrayNombres, arrayWithSize(greaterThanOrEqualTo(3)));
+
+        //assertThat("El array no esta vacio",arrayNombres, emptyArray());
+
+        assertThat(arrayNombres,arrayContaining("Claudia", "Glow", "Por ejemplo", "Oscar", "Vida"));
+        assertThat(arrayNombres,arrayContainingInAnyOrder("Por ejemplo", "Oscar", "Vida","Claudia", "Glow"));
+
+        assertThat(arrayNombres, hasItemInArray("Oscar"));
+        assertThat(arrayNombres, hasItemInArray("Vida"));
+
+        assertThat(arrayNombres, allOf(hasItemInArray("Oscar"),hasItemInArray("Vida")));
+
+    }
+
+    @Test
+    void asercionesMap(){
+        Map<String, Integer> edadEstudiante = new HashMap<>();
+        edadEstudiante.put("Juana", 28);
+        edadEstudiante.put("Oscar", 30);
+        edadEstudiante.put("Lobas", 19);
+        edadEstudiante.put("Jaz", 21);
+        edadEstudiante.put("Clara", 20);
+        edadEstudiante.put("Huevo", 22);
+
+        assertThat(edadEstudiante, not(anEmptyMap()));
+
+        assertThat(edadEstudiante.keySet(), hasSize(6));
+        assertThat(edadEstudiante.keySet(), hasSize(greaterThan(0)));
+
+        assertThat(edadEstudiante, hasKey("Lobas"));
+
+        assertThat(edadEstudiante, allOf(hasKey("Lobas"),hasKey("Huevo")));
+
+        assertThat(edadEstudiante, hasValue(22));
+        assertThat(edadEstudiante, hasEntry("Jaz", 21));
+
+        assertThat(edadEstudiante.values(), everyItem(greaterThanOrEqualTo(18)));
+    }
+
+    @Test
+    void asersionObjeto(){
+        Persona usuario = new Persona("Juan","Marcos",22,"Facatativa",true);
+
+        assertThat(usuario,not(nullValue()));
+
+        assertThat(usuario, hasProperty("edad")); //que tenga esta propiedad en la clase
+        assertThat(usuario, hasProperty("edad", greaterThanOrEqualTo(10)));
+        //que el atributo ciudad debe ser string
+        assertThat(usuario, hasProperty("ciudad",instanceOf(String.class)));
+
+    }
 }
